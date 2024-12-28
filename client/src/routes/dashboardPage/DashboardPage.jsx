@@ -1,21 +1,52 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import './dashboardPage.css'
+import { useAuth } from "@clerk/clerk-react";
+import { useNavigate } from 'react-router-dom';
 
 const DashboardPage = () => {
+  const { userId } = useAuth();
+  const QueryClient = useQueryClient();
+  const navigate = useNavigate();
+
+  const mutation = useMutation({
+    mutationFn: (text) => {
+      return fetch(`${import.meta.env.VITE_API_URL}/api/chats`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        // body: JSON.stringify({ userId, text }),
+        body: JSON.stringify({ text }),
+      }).then(res => res.json());
+    },
+    onSuccess: (id) => {
+      // Invalidate and refetch
+      QueryClient.invalidateQueries({ queryKey: ['userChats'] });
+      navigate(`/dashboard/chats/${id}`);
+    },
+  })
 
   const handleSubmit = async (e) => {
     e.preventDefault()
 
     const textInput = e.target.textInput.value;
+    const text = textInput;
     if (!textInput) return;
 
-    await fetch("http://localhost:3000/api/chats", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ text: textInput }),
-    });
+    mutation.mutate(text);
+
+    // await fetch("http://localhost:3000/api/chats", {
+    //   method: "POST",
+    //   credentials: "include",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   // body: JSON.stringify({ userId, text }),
+    //   body: JSON.stringify({ text }),
+    // });
   }
+
   return (
     <div className='dashboardPage'>
       <div className="texts">

@@ -2,10 +2,25 @@ import { Link } from 'react-router-dom'
 import './homepage.css'
 import { TypeAnimation } from 'react-type-animation'
 import { useState } from 'react';
+import { useAuth } from '@clerk/clerk-react';
 
 const Homepage = () => {
 
   const [typingStatus, setTypingStatus] = useState('Human1');
+  // const { getToken } = useAuth();
+
+  // const test = async () => {
+  //   const token = await getToken();
+
+  //   await fetch('http://localhost:3000/api/test', {
+  //   method: 'GET',
+  //   credentials: 'include',
+  //   headers: {
+  //     'Authorization': `Bearer ${token}`
+  //     }
+  //   });
+  // };
+
   return (
     <div className='homepage'>
       <img src="/orbital.png" alt="" className='orbital'/>
@@ -17,6 +32,7 @@ const Homepage = () => {
           Expand your creativity with a touch of AI.
         </h3>
         <Link to='/dashboard'>Get Started</Link>
+        {/* <button onClick={test}>TEST BACKEND AUTH</button> */}
       </div>
       <div className='right'>
         <div className="imgContainer">

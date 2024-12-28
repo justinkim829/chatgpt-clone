@@ -24,6 +24,7 @@
 
       .message {
         padding: 20px;
+        margin-top: 5px;
 
         &.user {
           background-color: rgb(209, 209, 209);
