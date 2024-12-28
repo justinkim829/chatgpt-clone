@@ -1,6 +1,21 @@
 import './dashboardPage.css'
 
 const DashboardPage = () => {
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+
+    const textInput = e.target.textInput.value;
+    if (!textInput) return;
+
+    await fetch("http://localhost:3000/api/chats", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ text: textInput }),
+    });
+  }
   return (
     <div className='dashboardPage'>
       <div className="texts">
@@ -25,8 +40,8 @@ const DashboardPage = () => {
       </div>
 
       <div className="formContainer">
-        <form>
-          <input type="text" placeholder='Ask me anything...'/>
+        <form onSubmit={handleSubmit}>
+          <input type="text" name="textInput" placeholder='Ask me anything...'/>
           <button>
             <img src="/arrow.png" alt="" />
           </button>
