@@ -5,6 +5,7 @@ import { IKImage } from 'imagekitio-react';
 import model from '../../lib/gemini';
 import Markdown from 'react-markdown';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { use } from 'react';
 
 const NewPrompt = ( { data }) => {
   const [question, setQuestion] = useState("");
@@ -72,8 +73,8 @@ const NewPrompt = ( { data }) => {
     },
   });
 
-  const add = async (textInput) => {
-    setQuestion(textInput);
+  const add = async (textInput, isInitial) => {
+    if (!isInitial) setQuestion(textInput);
 
     try {
       const result = await chat.sendMessageStream(Object.entries(img.aiData).length ?
@@ -98,8 +99,19 @@ const NewPrompt = ( { data }) => {
     const textInput = e.target.textInput.value;
     if (!textInput) return;
 
-    add(textInput);
+    add(textInput, false);
   }
+
+  // In production, we don't need this (only for Strictmode developer)
+  const hasRun = useRef(false);
+  useEffect(() => {
+    if (!hasRun.current) {
+      if (data?.history?.length === 1) {
+        add(data.history[0].parts[0].text, true);
+      }
+    }
+    hasRun.current = true;
+  }, []);
 
   return (
     <>
